@@ -1,0 +1,7 @@
+class IDLE:
+    pass
+
+class BALLLOOPINGTEST:
+    def master():
+        def events():
+          threeBallCycle
