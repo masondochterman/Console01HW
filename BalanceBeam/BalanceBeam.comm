@@ -1,0 +1,11 @@
+class IDLE:
+    pass
+
+class BALANCEBEAM:
+    def master():
+        def events():
+            homeRedCar
+            homeBlueCar
+            dropRed
+            dropBlue
+            testBlue

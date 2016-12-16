@@ -17,7 +17,7 @@ namespace events {
 }
 }
 
-namespace BALLLOOPINGTEST {
+namespace BALANCEBEAM {
 
 __attribute__((weak)) void setup();
 __attribute__((weak)) void enter();
@@ -28,10 +28,11 @@ __attribute__((weak)) void exit();
 
 
 namespace events {
-void threeBallCycle();
-void oneBallCycle();
-void oneBallCycle2();
-void oneBallCycle3();
+void homeRedCar();
+void homeBlueCar();
+void dropRed();
+void dropBlue();
+void testBlue();
 }
 }
 
@@ -39,7 +40,7 @@ void oneBallCycle3();
 
 enum State {
   STATE_IDLE,
-  STATE_BALLLOOPINGTEST
+  STATE_BALANCEBEAM
 };
 
 extern MasterManager<State, 2, 0> manager;

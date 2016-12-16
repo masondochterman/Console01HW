@@ -26,7 +26,10 @@ var BALLLOOPINGTEST = {
       
     },
     events: {
-      threeBallCycle: function threeBallCycle() { manager.sendEvent(0, 1); }
+      threeBallCycle: function threeBallCycle() { manager.sendEvent(0, 1); },
+      oneBallCycle: function oneBallCycle() { manager.sendEvent(1, 1); },
+      oneBallCycle2: function oneBallCycle2() { manager.sendEvent(2, 1); },
+      oneBallCycle3: function oneBallCycle3() { manager.sendEvent(3, 1); }
     }
   },
   tablet: {

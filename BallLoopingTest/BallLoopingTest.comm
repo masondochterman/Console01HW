@@ -5,3 +5,7 @@ class BALLLOOPINGTEST:
     def master():
         def events():
           threeBallCycle
+          oneBallCycle
+          oneBallCycle2
+          oneBallCycle3
+         

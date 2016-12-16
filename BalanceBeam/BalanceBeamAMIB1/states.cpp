@@ -2,14 +2,14 @@
 
 static const StateInfo state_infos[2] = {
   {IDLE::setup, IDLE::enter, IDLE::exit, IDLE::loop, IDLE::event},
-  {BALLLOOPINGTEST::setup, BALLLOOPINGTEST::enter, BALLLOOPINGTEST::exit, BALLLOOPINGTEST::loop, BALLLOOPINGTEST::event}
+  {BALANCEBEAM::setup, BALANCEBEAM::enter, BALANCEBEAM::exit, BALANCEBEAM::loop, BALANCEBEAM::event}
 };
 
 static const WireValue wire_values[0] = {
   
 };
 
-MasterManager<State, 2, 0> manager(0x909ca5c1, state_infos, wire_values, 0);
+MasterManager<State, 2, 0> manager(0x30ce77aa, state_infos, wire_values, 0);
 
 namespace IDLE {
 
@@ -24,22 +24,25 @@ void event(uint8_t ev) {
 
 
 }
-namespace BALLLOOPINGTEST {
+namespace BALANCEBEAM {
 
 
 void event(uint8_t ev) {
   switch (ev) {
   case 0:
-    events::threeBallCycle();
+    events::homeRedCar();
     break;
   case 1:
-    events::oneBallCycle();
+    events::homeBlueCar();
     break;
   case 2:
-    events::oneBallCycle2();
+    events::dropRed();
     break;
   case 3:
-    events::oneBallCycle3();
+    events::dropBlue();
+    break;
+  case 4:
+    events::testBlue();
     break;
   default:
     break;
