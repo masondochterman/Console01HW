@@ -13,7 +13,7 @@ void setup() {
   pinMode(LEDS_PIN, OUTPUT);
   digitalWrite(LEDS_PIN, HIGH);
   setupMultiInterfaceBoard();
-  manager.debugSetup(STATE_BALANCEBEAM);
+  manager.debugSetup(STATE_IDLE);
 }
 
 

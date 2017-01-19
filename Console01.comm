@@ -1,0 +1,38 @@
+class IDLE:
+    pass
+
+class BALLLOOPINGTEST:
+#AMIB 2 MASTER
+    def master():
+        def events():
+            threeBallCycle
+            oneBallCycle
+            oneBallCycle2
+            oneBallCycle3
+    def amib3():
+        pass
+          
+class BALANCEBEAM:
+#AMIB 2 MASTER
+    def master():
+        def events():
+            homeRedCar
+            homeBlueCar
+            dropRed
+            dropBlue
+            homeRedCarReverse
+            homeBlueCarReverse
+            moveToPositionBlueCarPosition6
+            moveToPositionBlueCarPosition5
+            moveToPositionBlueCarPosition4
+            moveToPositionBlueCarPosition3
+            moveToPositionBlueCarPosition2
+            moveToPositionBlueCarPosition1
+            moveToPositionRedCarPosition6
+            moveToPositionRedCarPosition5
+            moveToPositionRedCarPosition4
+            moveToPositionRedCarPosition3
+            moveToPositionRedCarPosition2
+            moveToPositionRedCarPosition1
+        def values():
+            absolutePositionBlue = uint32_t

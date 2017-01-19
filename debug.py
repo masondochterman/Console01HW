@@ -18,7 +18,7 @@ import serial.tools.list_ports
 State = namedtuple('State', ('name', 'id', 'devices'))
 DeviceState = namedtuple('DeviceState', ('values', 'events'))
 
-STATES = [State(name='IDLE', id=0, devices={'master': DeviceState(values={}, events=[]), 'tablet': DeviceState(values={}, events=[])}), State(name='ARM', id=1, devices={'master': DeviceState(values=OrderedDict([('stepperPosition', 'uint32_t')]), events=['moveFromShortToTall', 'moveFromTallToShort', 'raiseArm', 'lowerArm', 'enableElectromagnet', 'disableElectromagnet', 'resetArmPosition', 'armDemo']), 'tablet': DeviceState(values={}, events=[])}), State(name='PERPETUALMOTION', id=2, devices={'master': DeviceState(values=OrderedDict([('railPosition', 'uint32_t')]), events=['findHome', 'steps', 'openGate', 'closeGate', 'moveUp', 'perpetualMotionDemo']), 'tablet': DeviceState(values=OrderedDict(), events=['finishedAction'])})]
+STATES = [State(name='IDLE', id=0, devices={'master': DeviceState(values={}, events=[]), 'tablet': DeviceState(values={}, events=[]), 'amib3': DeviceState(values={}, events=[])}), State(name='BALLLOOPINGTEST', id=1, devices={'master': DeviceState(values=OrderedDict(), events=['threeBallCycle', 'oneBallCycle', 'oneBallCycle2', 'oneBallCycle3']), 'tablet': DeviceState(values={}, events=[]), 'amib3': DeviceState(values=OrderedDict(), events=[])}), State(name='BALANCEBEAM', id=2, devices={'master': DeviceState(values=OrderedDict([('absolutePositionBlue', 'uint32_t')]), events=['homeRedCar', 'homeBlueCar', 'dropRed', 'dropBlue', 'homeRedCarReverse', 'homeBlueCarReverse', 'moveToPositionBlueCarPosition6', 'moveToPositionBlueCarPosition5', 'moveToPositionBlueCarPosition4', 'moveToPositionBlueCarPosition3', 'moveToPositionBlueCarPosition2', 'moveToPositionBlueCarPosition1', 'moveToPositionRedCarPosition6', 'moveToPositionRedCarPosition5', 'moveToPositionRedCarPosition4', 'moveToPositionRedCarPosition3', 'moveToPositionRedCarPosition2', 'moveToPositionRedCarPosition1']), 'tablet': DeviceState(values={}, events=[]), 'amib3': DeviceState(values={}, events=[])})]
 
 if len(sys.argv) > 2:
     print >>sys.stderr, "Usage: python gen.py [serialport]"
@@ -87,7 +87,7 @@ if port.read(1) != '\x05':
     comm_error()
 
 its_build_id, = struct.unpack("<I", port.read(4))
-my_build_id = 0x21916e81
+my_build_id = 0xd7d6d69e
 if its_build_id != my_build_id:
     print >>sys.stderr, "Mismatching build IDs: expected %#08x but got %#08x, exiting" % (my_build_id, its_build_id)
     sys.exit(3)
