@@ -121,6 +121,7 @@ void setup()
   blueBallPump.homePump();
   
   blueCarStepper.setStepsPerMillimeter(50);
+  redCarStepper.setStepsPerMillimeter(50);
   
   //setting up serial monitor for diagnostics
   Serial3.begin(9600);
@@ -173,7 +174,7 @@ void events::homeBlueCar()
 void events::dropRed()
 {
   //drops ball from red ball pump into car
-   redBallPump.pumpBall();
+  redBallPump.pumpBall();
 }
 
 void events::dropBlue()
@@ -228,7 +229,6 @@ void events::moveToPositionBlueCarPosition6()
 
 void events::moveToPositionBlueCarPosition5()
 {
-  
   blueCarStepper.enableStepper();
   blueCarStepper.setSpeedInMillimetersPerSecond(100);
   blueCarStepper.setAccelerationInMillimetersPerSecondPerSecond(20);
