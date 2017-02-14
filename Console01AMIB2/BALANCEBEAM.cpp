@@ -17,6 +17,7 @@
 #include <Manager.h>
 #include <BallPumpStepper.h>
 
+//defines blue ball pump preset values
 #define BLUE_PUMP_STP_PORT 4
 #define BLUE_PUMP_STP_BALL_PS 56
 #define BLUE_PUMP_STP_HOME_PS 57
@@ -27,8 +28,9 @@
 #define BLUE_PUMP_STP_DIR -1
 #define BLUE_PUMP_STP_HOME_DIST 1.1
 #define BLUE_PUMP_TIMEOUT 30000
-#define BLUE_PUMP_OFFSET 0.3
+#define BLUE_PUMP_OFFSET 0.30
 
+//defines red ball pump preset values
 #define RED_PUMP_STP_PORT 5
 #define RED_PUMP_STP_BALL_PS 59
 #define RED_PUMP_STP_HOME_PS 58
@@ -42,7 +44,6 @@
 #define RED_PUMP_OFFSET 0.3
 
 namespace BALANCEBEAM
-
 {
 //pins for servos and sensors on balance beam
 //const byte Right_innercar_ps = 29;
@@ -54,17 +55,17 @@ const byte Ball_start_ps = 23;
 
 const byte blueServoPin = 5;
 const byte redServoPin = 1;
-const byte blueAlignmentPin = 57;
+const byte blueAlignmentPin = 56;
 const byte redAlignmentPin = 58;
-const byte blueBallSensorPin = 56;
-const byte redBallSensorPin = 59;
-int blueDirection = BALL_PUMP_DIRECTION_COUNTERCLOCKWISE;
-int redDirection = BALL_PUMP_DIRECTION_CLOCKWISE;
+const byte blueBallSensorPin = 57;
+const byte redBallSensorPin = 26; //previously 59
+int blueDirection = 1;
+int redDirection = -1;
 
 const byte homeLimitSwitchPinRedOuter = 28;
 const byte homeLimitSwitchPinBlueOuter = 54;
 const byte homeLimitSwitchPinRedInner = 29;
-const byte homeLimitSwitchPinBlueInner = 55;
+const byte homeLimitSwitchPinBlueInner = 25;
 
 // declaring stepper motors
 SpeedyStepper redCarStepper;
@@ -100,11 +101,15 @@ void setup()
   pinMode(homeLimitSwitchPinBlueInner, INPUT_PULLUP);
   pinMode(RED_PUMP_STP_BALL_PS, INPUT_PULLUP);
   pinMode(BLUE_PUMP_STP_BALL_PS, INPUT_PULLUP);
+  pinMode(4, OUTPUT);
   
-  redBallPump.begin(redServoPin, redBallSensorPin, redAlignmentPin, redDirection);
+  /*redBallPump.begin(redServoPin, redBallSensorPin, redAlignmentPin, redDirection);
   redBallPump.initialize();
   blueBallPump.begin(blueServoPin, blueBallSensorPin, blueAlignmentPin, blueDirection);
-  blueBallPump.initialize();
+  blueBallPump.initialize(); */
+  
+  blueBallPump.setupPump();
+  redBallPump.setupPump();
  
   redCarStepper.connectToPort(2);
   blueCarStepper.connectToPort(3);
@@ -113,11 +118,13 @@ void setup()
   redBallPump.setPumpIO(RED_PUMP_STP_PORT, RED_PUMP_STP_HOME_PS, RED_PUMP_STP_BALL_PS);
   redBallPump.setPumpDirection(RED_PUMP_STP_DIR);
   redBallPump.setPumpOffset(RED_PUMP_OFFSET);
-  //redBallPump.homePump();
-  
+  redBallPump.setPumpStepsPerRevolution(1600); //was in blue but not red 
+  redBallPump.homePump();//Checks to see if car position value has changed and, if so, moves car to new position
+ 
   blueBallPump.setPumpIO(BLUE_PUMP_STP_PORT, BLUE_PUMP_STP_HOME_PS, BLUE_PUMP_STP_BALL_PS);
   blueBallPump.setPumpDirection(BLUE_PUMP_STP_DIR);
-  blueBallPump.setPumpOffset(BLUE_PUMP_OFFSET);
+  blueBallPump.setPumpStepsPerRevolution(1600);
+  blueBallPump.setPumpOffset(0.30);
   blueBallPump.homePump();
   
   blueCarStepper.setStepsPerMillimeter(50);
@@ -127,10 +134,9 @@ void setup()
   Serial3.begin(9600);
 }
 
+//Objective: check to see if car position value has changed and, if so, move car to new position.
 void loop()
 {
- //Checks to see if car position value has changed and, if so, moves car to new position
- 
   if(absolutePositionBlue.changed)
   {
     blueCarStepper.enableStepper();
@@ -140,84 +146,70 @@ void loop()
     blueCarStepper.disableStepper();
     absolutePositionBlue.changed = false;
   }
+  
+  if(absolutePositionRed.changed)
+  {
+    redCarStepper.enableStepper();
+    redCarStepper.setSpeedInMillimetersPerSecond(100);
+    redCarStepper.setAccelerationInMillimetersPerSecondPerSecond(20);
+    redCarStepper.moveToPositionInMillimeters(absolutePositionRed.value);
+    redCarStepper.disableStepper();
+    absolutePositionRed.changed = false;
+  }
 }
 
+//Objective: move red car to end of balance beam and execute a jitter to verify position.
 void events::homeRedCar()
 {
-  //
-  //
-  //
-  //Objective: move red car to end of balance beam and execute a jitter to verify position.
-  //
-  //
-  //
-  
+  redCarStepper.enableStepper();
   redCarStepper.moveToHomeInMillimeters(directionTowardHomeRed, speedInMillimetersPerSecond, maxDistanceToMoveInMillimeters, homeLimitSwitchPinRedOuter);
+  redCarStepper.setCurrentPositionInMillimeters(0);
+  redCarStepper.disableStepper();
 }
 
-
+//Objective: move blue car to end of balance beam and execute a jitter to verify position.
 void events::homeBlueCar()
 {
-  //
-  //
-  //
-  //Objective: move blue car to end of balance beam and execute a jitter to verify position.
-  //
-  //
-  //
   blueCarStepper.enableStepper();
   blueCarStepper.moveToHomeInMillimeters(directionTowardHomeBlue, speedInMillimetersPerSecond, maxDistanceToMoveInMillimeters, homeLimitSwitchPinBlueOuter);
   blueCarStepper.setCurrentPositionInMillimeters(0);
   blueCarStepper.disableStepper();
 }
 
+//Objective: drop ball from red ball pump into car.
 void events::dropRed()
 {
-  //drops ball from red ball pump into car
-  redBallPump.pumpBall();
+  //redBallPump.pumpBall();
+  redBallPump.homePump();
 }
 
+//Objective: drop ball from blue ball pump into car.
 void events::dropBlue()
 {
-  //drops ball from blue ball pump into car
   blueBallPump.pumpBall();
+  //blueBallPump.setPumpDirection(-1);
 }
 
+
+//Objective: execute the red car homing function but in the reverse direction.
 void events::homeRedCarReverse()
 {
-  //
-  //
-  //
-  //Objective: execute the red car homing function but in the reverse direction.
-  //
-  //
-  //
-  
+  redCarStepper.enableStepper();
   redCarStepper.moveToHomeInMillimeters(directionTowardHomeReverseRed, speedInMillimetersPerSecond, maxDistanceToMoveInMillimeters, homeLimitSwitchPinRedInner);
+  redCarStepper.setCurrentPositionInMillimeters(0);
+  redCarStepper.disableStepper();
 }
 
+//Objective: execute the blue car homing function but in reverse. 
 void events::homeBlueCarReverse()
-{
-  //
-  //
-  //
-  //Objective: execute the blue car homing function but in reverse.
-  //
-  //
-  //
-  
+{ 
   blueCarStepper.moveToHomeInMillimeters(directionTowardHomeReverseBlue, speedInMillimetersPerSecond, maxDistanceToMoveInMillimeters, homeLimitSwitchPinBlueInner);
 }
 
-//
-//
-//
-//BLUE CAR POSITION FUNCTIONS
-//Objective: Move the blue car to a numbered position on the balance beam.
-//
-//
-//
 
+//////////////////// BLUE CAR POSITION FUNCTIONS /////////////////////////
+
+//Objective: Move the blue car to a numbered position on the balance beam.
 void events::moveToPositionBlueCarPosition6()
 {
   blueCarStepper.enableStepper();
@@ -234,7 +226,6 @@ void events::moveToPositionBlueCarPosition5()
   blueCarStepper.setAccelerationInMillimetersPerSecondPerSecond(20);
   blueCarStepper.moveToPositionInMillimeters(85);
   blueCarStepper.disableStepper();
-  
 }
 
 void events::moveToPositionBlueCarPosition4()
@@ -273,16 +264,10 @@ void events::moveToPositionBlueCarPosition1()
   blueCarStepper.disableStepper();
 }
 
-//
-//
-//
-//RED CAR POSITION FUNCTIONS
+
+////////////////// RED CAR POSITION FUNCTIONS //////////////////////
+
 //Objective: Move the red car to a numbered position on the balance beam.
-//
-//
-//
-
-
 void events::moveToPositionRedCarPosition6()
 {
   redCarStepper.enableStepper();
@@ -297,7 +282,7 @@ void events::moveToPositionRedCarPosition5()
   redCarStepper.enableStepper();
   redCarStepper.setSpeedInMillimetersPerSecond(100);
   redCarStepper.setAccelerationInMillimetersPerSecondPerSecond(20);
-  redCarStepper.moveToPositionInMillimeters(150);
+  redCarStepper.moveToPositionInMillimeters(60);
   redCarStepper.disableStepper();
 }
 
@@ -306,7 +291,7 @@ void events::moveToPositionRedCarPosition4()
   redCarStepper.enableStepper();
   redCarStepper.setSpeedInMillimetersPerSecond(100);
   redCarStepper.setAccelerationInMillimetersPerSecondPerSecond(20);
-  redCarStepper.moveToPositionInMillimeters(300);
+  redCarStepper.moveToPositionInMillimeters(120);
   redCarStepper.disableStepper();
 }
 
@@ -315,7 +300,7 @@ void events::moveToPositionRedCarPosition3()
   redCarStepper.enableStepper();
   redCarStepper.setSpeedInMillimetersPerSecond(100);
   redCarStepper.setAccelerationInMillimetersPerSecondPerSecond(20);
-  redCarStepper.moveToPositionInMillimeters(450);
+  redCarStepper.moveToPositionInMillimeters(180);
   redCarStepper.disableStepper();
 }
 
@@ -324,7 +309,7 @@ void events::moveToPositionRedCarPosition2()
   redCarStepper.enableStepper();
   redCarStepper.setSpeedInMillimetersPerSecond(100);
   redCarStepper.setAccelerationInMillimetersPerSecondPerSecond(20);
-  redCarStepper.moveToPositionInMillimeters(600);
+  redCarStepper.moveToPositionInMillimeters(240);
   redCarStepper.disableStepper();
 }
 
@@ -333,7 +318,17 @@ void events::moveToPositionRedCarPosition1()
   redCarStepper.enableStepper();
   redCarStepper.setSpeedInMillimetersPerSecond(100);
   redCarStepper.setAccelerationInMillimetersPerSecondPerSecond(20);
-  redCarStepper.moveToPositionInMillimeters(750);
+  redCarStepper.moveToPositionInMillimeters(300);
   redCarStepper.disableStepper();
+}
+
+void events::pumpThenReverseBlue()
+{
+  long unsigned int position = absolutePositionBlue.value;
+  digitalWrite(4, HIGH);
+  events::moveToPositionBlueCarPosition1();
+  events::dropBlue();
+  blueCarStepper.moveToPositionInMillimeters(position);
+  digitalWrite(4, LOW);
 }
 }

@@ -62,6 +62,7 @@ namespace events {
 
 namespace master {
 extern RemoteValue<0, uint32_t> absolutePositionBlue;
+extern RemoteValue<0, uint32_t> absolutePositionRed;
 
 namespace events {
 void homeRedCar();
@@ -82,6 +83,7 @@ void moveToPositionRedCarPosition4();
 void moveToPositionRedCarPosition3();
 void moveToPositionRedCarPosition2();
 void moveToPositionRedCarPosition1();
+void pumpThenReverseBlue();
 }
 }
 }

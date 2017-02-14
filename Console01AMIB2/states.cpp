@@ -6,11 +6,12 @@ static const StateInfo state_infos[3] = {
   {BALANCEBEAM::setup, BALANCEBEAM::enter, BALANCEBEAM::exit, BALANCEBEAM::loop, BALANCEBEAM::event}
 };
 
-static const WireValue wire_values[1] = {
-  {2, 0, sizeof(uint32_t), (Value<void*>*) &BALANCEBEAM::absolutePositionBlue}
+static const WireValue wire_values[2] = {
+  {2, 0, sizeof(uint32_t), (Value<void*>*) &BALANCEBEAM::absolutePositionBlue},
+  {2, 1, sizeof(uint32_t), (Value<void*>*) &BALANCEBEAM::absolutePositionRed}
 };
 
-MasterManager<State, 3, 1> manager(0xd7d6d69e, state_infos, wire_values, 2);
+MasterManager<State, 3, 2> manager(0x6bcbea9b, state_infos, wire_values, 2);
 
 namespace IDLE {
 
@@ -56,6 +57,7 @@ namespace events {
 }
 namespace BALANCEBEAM {
 Value<uint32_t> absolutePositionBlue;
+Value<uint32_t> absolutePositionRed;
 
 void event(uint8_t ev) {
   switch (ev) {
@@ -112,6 +114,9 @@ void event(uint8_t ev) {
     break;
   case 17:
     events::moveToPositionRedCarPosition1();
+    break;
+  case 18:
+    events::pumpThenReverseBlue();
     break;
   default:
     break;

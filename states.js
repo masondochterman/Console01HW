@@ -46,7 +46,8 @@ var BALANCEBEAM = {
   id: 2,
   master: {
     values: {
-      absolutePositionBlue: new HardwareValue(2, 0, Manager.TYPE_UINT32)
+      absolutePositionBlue: new HardwareValue(2, 0, Manager.TYPE_UINT32),
+      absolutePositionRed: new HardwareValue(2, 1, Manager.TYPE_UINT32)
     },
     events: {
       homeRedCar: function homeRedCar() { manager.sendEvent(0, 2); },
@@ -66,7 +67,8 @@ var BALANCEBEAM = {
       moveToPositionRedCarPosition4: function moveToPositionRedCarPosition4() { manager.sendEvent(14, 2); },
       moveToPositionRedCarPosition3: function moveToPositionRedCarPosition3() { manager.sendEvent(15, 2); },
       moveToPositionRedCarPosition2: function moveToPositionRedCarPosition2() { manager.sendEvent(16, 2); },
-      moveToPositionRedCarPosition1: function moveToPositionRedCarPosition1() { manager.sendEvent(17, 2); }
+      moveToPositionRedCarPosition1: function moveToPositionRedCarPosition1() { manager.sendEvent(17, 2); },
+      pumpThenReverseBlue: function pumpThenReverseBlue() { manager.sendEvent(18, 2); }
     }
   },
   tablet: {

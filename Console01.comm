@@ -34,5 +34,7 @@ class BALANCEBEAM:
             moveToPositionRedCarPosition3
             moveToPositionRedCarPosition2
             moveToPositionRedCarPosition1
+            pumpThenReverseBlue
         def values():
             absolutePositionBlue = uint32_t
+            absolutePositionRed = uint32_t

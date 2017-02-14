@@ -67,6 +67,7 @@ void event(uint8_t ev) {
 
 namespace master {
 RemoteValue<0, uint32_t> absolutePositionBlue(0);
+RemoteValue<0, uint32_t> absolutePositionRed(1);
 
 namespace events {
 void homeRedCar() { manager.sendEvent(0); }
@@ -87,6 +88,7 @@ void moveToPositionRedCarPosition4() { manager.sendEvent(14); }
 void moveToPositionRedCarPosition3() { manager.sendEvent(15); }
 void moveToPositionRedCarPosition2() { manager.sendEvent(16); }
 void moveToPositionRedCarPosition1() { manager.sendEvent(17); }
+void pumpThenReverseBlue() { manager.sendEvent(18); }
 }
 }
 }

@@ -42,6 +42,7 @@ void oneBallCycle3();
 
 namespace BALANCEBEAM {
 extern Value<uint32_t> absolutePositionBlue;
+extern Value<uint32_t> absolutePositionRed;
 
 __attribute__((weak)) void setup();
 __attribute__((weak)) void enter();
@@ -70,6 +71,7 @@ void moveToPositionRedCarPosition4();
 void moveToPositionRedCarPosition3();
 void moveToPositionRedCarPosition2();
 void moveToPositionRedCarPosition1();
+void pumpThenReverseBlue();
 }
 }
 
@@ -81,4 +83,4 @@ enum State {
   STATE_BALANCEBEAM
 };
 
-extern MasterManager<State, 3, 1> manager;
+extern MasterManager<State, 3, 2> manager;
