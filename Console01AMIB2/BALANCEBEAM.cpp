@@ -322,6 +322,7 @@ void events::moveToPositionRedCarPosition1()
   redCarStepper.disableStepper();
 }
 
+//Objective: move blue car to position one, pump a ball, and return to original position
 void events::pumpThenReverseBlue()
 {
   long unsigned int position = absolutePositionBlue.value;
